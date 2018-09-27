@@ -22,11 +22,10 @@ function Autocast.GetAbilityIndex()
     if NPC.GetUnitName(myHero) == "npc_dota_hero_viper" then 
         abilityIndex = 0
     end      
-    if NPC.GetUnitName(myHero) == "npc_dota_hero_outworld_devourer" then 
+    if NPC.GetUnitName(myHero) == "npc_dota_hero_obsidian_destroyer" then 
         abilityIndex = 0
-
     end
-
+    
 end
 
 function Autocast.OnGameStart() 
@@ -40,7 +39,7 @@ end
 
 function Autocast.OnUpdate()
 
-    if Menu.IsEnabled(Autocast.ability) and Ability.GetLevel(ability) > 0
+    if Menu.IsEnabled(Autocast.ability) and myHero ~= nil and Ability.GetLevel(ability) > 0
     then Autocast.ToggleAbility() end
 
 end
