@@ -40,17 +40,17 @@ end
 
 function Autocast.ToggleAbility()
     if NPC.IsAttacking(myHero) then
-        hero = Autocast.GetFaceTarget(myHero)       
-         if Entity.IsHero(hero) then
-            if not Ability.GetAutoCastState(ability) then
-            Ability.ToggleMod(ability)   
+        local hero = Autocast.GetFaceTarget(myHero)       
+            if Entity.IsHero(hero) then
+                if not Ability.GetAutoCastState(ability) then
+                Ability.ToggleMod(ability)   
+                end
             end
-        end
-        if not Entity.IsHero(hero) then 
-            if Ability.GetAutoCastState(ability) then
-            Ability.ToggleMod(ability)   
+            if not Entity.IsHero(hero) then 
+                if Ability.GetAutoCastState(ability) then
+                Ability.ToggleMod(ability)   
+                end
             end
-        end
     end
 end
     
