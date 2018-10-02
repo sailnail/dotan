@@ -26,31 +26,34 @@ function Autocast.GetAbilityIndex()
     end
 end
 
-function Autocast.OnGameStart() 
+function Autocast.OnUpdate()
     myHero = Heroes.GetLocal()
+    if not myHero then return end
     Autocast.GetAbilityIndex()
     if abilityIndex == nil then return end    
     ability = NPC.GetAbilityByIndex(myHero, abilityIndex)
-end
-
-function Autocast.OnUpdate()
-    if Menu.IsEnabled(Autocast.ability) and myHero ~= nil and Ability.GetLevel(ability) > 0
-    then Autocast.ToggleAbility() end
+    if Menu.IsEnabled(Autocast.ability) and myHero ~= nil and Ability.GetLevel(ability) > 0 then 
+        Autocast.ToggleAbility() 
+    end
 end
 
 function Autocast.ToggleAbility()
     if NPC.IsAttacking(myHero) then
-        local hero = Autocast.GetFaceTarget(myHero)       
+        local hero = Autocast.GetFaceTarget(myHero) 
+        Log.Write(Entity.GetClassName(hero))
             if Entity.IsHero(hero) then
                 if not Ability.GetAutoCastState(ability) then
-                Ability.ToggleMod(ability)   
+                    Ability.ToggleMod(ability)   
                 end
             end
+            if Entity.GetClassName(hero) == "C_DOTA_Unit_Roshan" then return end
             if not Entity.IsHero(hero) then 
                 if Ability.GetAutoCastState(ability) then
-                Ability.ToggleMod(ability)   
+                    Ability.ToggleMod(ability)   
                 end
             end
+        
+
     end
 end
     
@@ -80,12 +83,6 @@ function Autocast.GetFaceTarget(unit)
         end
     end
     return unitRet
-end
-
-function Autocast.OnGameEnd()
-    ability = nil 
-    myHero = nil
-    abilityIndex = nil
 end
 
 return Autocast
