@@ -2,12 +2,16 @@ local Autocast = {}
 local ability = nil 
 local myHero = nil
 local abilityIndex = nil
+local talantsRange = nil
+local talantsLvl = nil
 
 Autocast.ability = Menu.AddOptionBool({"Utility", "Auto-Cast Toggler"}, "Enable", false)
 
 function Autocast.GetAbilityIndex()
     if NPC.GetUnitName(myHero) == "npc_dota_hero_huskar" then
          abilityIndex = 1
+         talantsLvl = 25
+         talantsRange = 150
     end    
     if NPC.GetUnitName(myHero) == "npc_dota_hero_silencer" then 
          abilityIndex = 1
@@ -17,9 +21,13 @@ function Autocast.GetAbilityIndex()
     end    
     if NPC.GetUnitName(myHero) == "npc_dota_hero_clinkz" then 
          abilityIndex = 1
+         talantsLvl = 20
+         talantsRange = 100
     end    
     if NPC.GetUnitName(myHero) == "npc_dota_hero_viper" then 
          abilityIndex = 0
+         talantsLvl = 15
+         talantsRange = 100
     end      
     if NPC.GetUnitName(myHero) == "npc_dota_hero_obsidian_destroyer" then 
          abilityIndex = 0
@@ -40,7 +48,6 @@ end
 function Autocast.ToggleAbility()
     if NPC.IsAttacking(myHero) then
         local hero = Autocast.GetFaceTarget(myHero) 
-        Log.Write(Entity.GetClassName(hero))
             if Entity.IsHero(hero) then
                 if not Ability.GetAutoCastState(ability) then
                     Ability.ToggleMod(ability)   
@@ -67,7 +74,8 @@ function Autocast.GetAngle(unit, unitPos, npcPos)
 end
 
 function Autocast.GetFaceTarget(unit)
-    local range = NPC.GetAttackRange(unit) + 50
+    local range = Autocast.GetRange(unit)
+    Log.Write(range)
     local unitsAround = Entity.GetUnitsInRadius(unit, range, Enum.TeamType.TEAM_ENEMY)
     if not unitsAround then return nil end
     local unitRet = nil
@@ -84,5 +92,20 @@ function Autocast.GetFaceTarget(unit)
     end
     return unitRet
 end
+
+function Autocast.GetRange(unit)
+    local range = NPC.GetAttackRange(unit) + 50
+    if NPC.HasItem(unit, "item_hurricane_pike") or NPC.HasItem(unit, "item_dragon_lance")  then
+        range = range + 140
+    end
+    if talantsLvl then 
+        if NPC.GetCurrentLevel(unit) >= talantsLvl then
+            range = range + talantsRange
+        end
+    end    
+    return range
+end    
+
+
 
 return Autocast
